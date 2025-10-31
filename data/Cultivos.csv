@@ -1,0 +1,41 @@
+﻿cultivo;estacao;dias_cresc;tipo_cultivo;intervalo_colheita;preco_semente;preco_venda;compravel;obs
+Alho;Primavera;4;Única;;40;60;Sim;
+Batata;Primavera;6;Única;;50;80;Sim;
+Cenoura;Primavera;3;Única;;0;35;Não;Encontrando
+Chirívia;Primavera;4;Única;;20;35;Sim;
+Couve;Primavera;6;Única;;70;110;Sim;
+Couve-flor;Primavera;12;Única;;80;175;Sim;
+Jasmim-azul;Primavera;7;Única;;30;50;Sim;
+Ruibarbo;Primavera;13;Única;;100;220;Sim;Oásis
+Tulipa;Primavera;6;Única;;20;30;Sim;
+Vagem;Primavera;10;Múltipla;3;60;40;Sim;
+Morango;Primavera;8;Múltipla;4;100;120;Sim;Vestival do Ovo
+Grão de café;Primavera, Verão;10;Múltipla;2;2500;15;Sim;Carrinho de Viagem
+Melão;Verão;12;Única;;80;250;Sim;
+Papoula;Verão;7;Única;;100;140;Sim;
+Rabanete;Verão;6;Única;;40;90;Sim;
+Repolho roxo;Verão;9;Única;;150;260;Sim;Carrinho de Viagem
+Repolho roxo;Verão;9;Única;;1000;260;Sim;Carrinho de Viagem
+Carambola;Verão;13;Única;;400;750;Sim;Oásis
+Flor-Miçanga;Verão;8;Única;;50;90;Sim;
+Girassol;Verão, Outono;8;Única;;200;80;Sim;
+Girassol;Verão, Outono;8;Única;;125;80;Sim;Mercado Joja
+Mirtilo;Verão;13;Múltipla;4;80;50;Sim;
+Milho;Verão, Outono;14;Múltipla;4;150;50;Sim;
+Lúpulo;Verão;11;Múltipla;1;60;25;Sim;
+Pimenta quente;Verão;5;Múltipla;3;40;40;Sim;
+Tomate;Verão;11;Múltipla;4;50;60;Sim;
+Abobrinha de Verão;Verão;6;Múltipla;3;0;45;Não;Encontrando
+Amaranto;Outono;7;Única;;70;150;Sim;
+Alcachofra;Outono;8;Única;;30;160;Sim;
+Beterraba;Outono;6;Única;;20;100;Sim;Oásis
+Couve chinesa;Outono;4;Única;;50;80;Sim;
+Rosa-de-fada;Outono;12;Única;;200;290;Sim;
+Abóbora;Outono;13;Única;;100;320;Sim;
+Cereja de Joia Doce;Outono;24;Única;;1000;3000;Sim;Carrinho de Viagem
+Inhame;Outono;10;Única;;60;160;Sim;
+Berinjela;Outono;5;Múltipla;6;20;60;Sim;
+Oxicoco;Outono;7;Múltipla;5;240;75;Sim;
+Uva;Outono;10;Múltipla;3;60;80;Sim;
+Brócolis;Outono;8;Múltipla;4;0;70;Não;Encontrando
+Fruta antiga;Primavera, Verão, Outono;28;Múltipla;6;0;550;Sim;Encontrando

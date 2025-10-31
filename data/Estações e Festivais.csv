@@ -1,0 +1,19 @@
+﻿estacao;festival;dia_festival;afeta_cultivo;obs
+primavera;festival do ovo;13;parcial;Lojas fechadas Pierre vende morangos no festival.
+primavera;festival do deserto;15;parcial;Deserto Loja Pierre fechada.
+primavera;festival do deserto;16;nao;Pierre na loja e NPCs ocupados.
+primavera;festival do deserto;17;nao;Pierre na loja e NPCs ocupados.
+primavera;dança das flores;24;sim;Cidade/lojas fechadas.
+verao;luau;11;parcial;Lojas fechadas.
+verao;competição de truta;20;nao;Sem impacto em lojas.
+verao;competição de truta;21;nao;Sem impacto em lojas.
+verao;dança das medusas-da-lua;28;nao;Sem impacto.
+outono;feira do vale do orvalho;16;parcial;Lojas fechadas Redireciona para o festival.
+outono;véspera dos espíritos;27;nao;Cidade acessível até 22h
+inverno;festival do gelo;8;nao;Sem cultivo no inverno.
+inverno;festival da lula;12;nao;Sem cultivo no inverno.
+inverno;festival da lula;13;nao;Sem cultivo no inverno.
+inverno;mercado noturno;15;nao;Sem cultivo no inverno.
+inverno;mercado noturno;16;nao;Sem cultivo no inverno.
+inverno;mercado noturno;17;nao;Sem cultivo no inverno.
+inverno;festival da estrela invernal;25;nao;Sem cultivo no inverno.
