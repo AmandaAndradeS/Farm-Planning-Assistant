@@ -14,16 +14,20 @@ FONTE_APP = "Londrina Solid"
 FONTE_ARQUIVO = os.path.join(ASSETS_DIR, "LondrinaSolid-Regular.ttf")
 FONT_NAME_PDF = 'LondrinaSolid'
 
+# CÓDIGO CORRIGIDO AQUI: Usa caminhos relativos (assets/...) para a variável *_TK
 CAMINHO_CURSOR_MAIN_CUR = os.path.join(ASSETS_DIR, "NormalSelects.cur")
-CAMINHO_CURSOR_MAIN_TK = CAMINHO_CURSOR_MAIN_CUR.replace("\\", "/")
+CAMINHO_CURSOR_MAIN_TK = os.path.join("assets", "NormalSelects.cur").replace("\\", "/")
+
 CAMINHO_CURSOR_POINTER_CUR = os.path.join(ASSETS_DIR, "PrecisionSelect.cur")
-CAMINHO_CURSOR_POINTER_TK = CAMINHO_CURSOR_POINTER_CUR.replace("\\", "/")
+CAMINHO_CURSOR_POINTER_TK = os.path.join("assets", "PrecisionSelect.cur").replace("\\", "/")
+
 CAMINHO_CURSOR_IBEAM_CUR = os.path.join(ASSETS_DIR, "TextSelect.cur")
-CAMINHO_CURSOR_IBEAM_TK = CAMINHO_CURSOR_IBEAM_CUR.replace("\\", "/")
+CAMINHO_CURSOR_IBEAM_TK = os.path.join("assets", "TextSelect.cur").replace("\\", "/")
 
 MAIN_CURSOR = f"@{CAMINHO_CURSOR_MAIN_TK}" if os.path.exists(CAMINHO_CURSOR_MAIN_CUR) else "arrow"
 POINTER_CURSOR = f"@{CAMINHO_CURSOR_POINTER_TK}" if os.path.exists(CAMINHO_CURSOR_POINTER_CUR) else "hand2"
 TEXT_IBEAM_CURSOR = f"@{CAMINHO_CURSOR_IBEAM_TK}" if os.path.exists(CAMINHO_CURSOR_IBEAM_CUR) else "xterm"
+# FIM DA CORREÇÃO
 
 IMAGEM_FUNDO_SPLASH = os.path.join(CAMINHO_IMAGENS, "img_projeto.png")
 IMAGEM_FUNDO_MAIN = os.path.join(CAMINHO_IMAGENS, "img_tela_2.png")
