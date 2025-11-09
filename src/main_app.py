@@ -1,10 +1,20 @@
 import os
+import sys
+
+if getattr(sys, 'frozen', False):
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(sys.executable))
+else:
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+if SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, SCRIPT_DIR)
+
+
 import platform
 import tkinter as tk
 from tkinter import ttk, font as tkFont, filedialog
 from PIL import Image, ImageTk, ImageDraw, ImageFont, ImageEnhance
 import random
-import sys
 import time
 import traceback
 
@@ -12,7 +22,7 @@ try:
     import pygame
 except ImportError:
     print("⚠️ Biblioteca Pygame não encontrada. Instale com 'pip install pygame'")
-    pygame = None 
+    pygame = None
 
 try:
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
@@ -28,7 +38,6 @@ except ImportError:
     print("⚠️ Biblioteca ReportLab não encontrada. A exportação de PDF será desativada.")
 
 from config import *
-
 from utils import (
     _hex_to_rgb, _rgb_to_hex, _interpolate_color, animate_hover_color,
     arredondar_cantos, criar_imagem_gradiente, animate_hover_bg
@@ -125,13 +134,7 @@ def adicionar_som_hover(widget):
     if EFEITO_SOM_HOVER:
         widget.bind("<Enter>", tocar_efeito_hover, add=True)
 
-if MAIN_CURSOR == "arrow":
-    print(f"AVISO: '{os.path.basename(CAMINHO_CURSOR_MAIN_CUR)}' não encontrado. Usando 'arrow'.")
-if POINTER_CURSOR == "hand2":
-    print(f"AVISO: '{os.path.basename(CAMINHO_CURSOR_POINTER_CUR)}' não encontrado. Usando 'hand2'.")
-if TEXT_IBEAM_CURSOR == "xterm":
-    print(f"AVISO: '{os.path.basename(CAMINHO_CURSOR_IBEAM_CUR)}' não encontrado. Usando 'xterm'.")
-    
+
 if REPORTLAB_AVAILABLE:
     try:
         if os.path.exists(FONTE_ARQUIVO):
@@ -150,20 +153,24 @@ class SplashScreen(tk.Frame):
         self.master = master
         self.on_start_callback = on_start_callback
         self.on_quit_callback = on_quit_callback
-        
+
         self._x = 0
         self._y = 0
-        
+
         try:
             imagem_pil = arredondar_cantos(Image.open(IMAGEM_FUNDO_SPLASH).convert("RGBA"), 24)
             self.imagem_tk = ImageTk.PhotoImage(imagem_pil)
             self.width = self.imagem_tk.width()
             self.height = self.imagem_tk.height()
+            self.inicializacao_ok = True
         except FileNotFoundError:
             print(f"❌ Imagem não encontrada: {IMAGEM_FUNDO_SPLASH}")
             self.master.destroy()
             return
-            
+
+        if not hasattr(self, 'inicializacao_ok'):
+            return
+
         self.configurar_janela()
 
         self.bg_label = tk.Label(self, image=self.imagem_tk, bg=COR_TRANSPARENTE)
@@ -175,7 +182,7 @@ class SplashScreen(tk.Frame):
 
         self.botao_iniciar = self.criar_botao("Carregando...", self.iniciar_app, self.imagem_botao_tk, (136, 172))
         self.criar_botao("Sair", self.on_quit_callback, self.imagem_botao_tk, (136, 266))
-        
+
         self.botao_iniciar.config(state="disabled", fg="#AAA")
 
         tocar_musica(MUSICA_TEMA_SPLASH, volume=0.5)
@@ -209,7 +216,7 @@ class SplashScreen(tk.Frame):
             self, text=texto, font=(FONTE_APP, 14),
             image=imagem_tk, compound="center", fg="black",
             bg=COR_TRANSPARENTE,
-            borderwidth=0, 
+            borderwidth=0,
             cursor=POINTER_CURSOR
         )
         botao.image = imagem_tk
@@ -220,12 +227,12 @@ class SplashScreen(tk.Frame):
                 widget_atual = event.widget.winfo_containing(x, y)
                 if widget_atual == botao:
                     comando()
-        
+
         def on_enter(e):
             if botao['state'] == 'normal':
                 animate_hover_color(e.widget, "#000000", "#FFFFFF", 150)
                 tocar_efeito_hover(volume=0.6)
-        
+
         def on_leave(e):
              if botao['state'] == 'normal':
                 animate_hover_color(e.widget, "#FFFFFF", "#000000", 150)
@@ -236,7 +243,7 @@ class SplashScreen(tk.Frame):
         botao.place(x=pos[0], y=pos[1], width=BOTAO_TAMANHO_SPLASH[0], height=BOTAO_TAMANHO_SPLASH[1])
         adicionar_som_hover(botao)
         return botao
-        
+
     def habilitar_inicio(self):
         self.botao_iniciar.config(text="Iniciar", state="normal", fg="black")
 
@@ -247,13 +254,17 @@ class SplashScreen(tk.Frame):
 
 
 class FarmApp(tk.Frame):
-    def __init__(self, master, df_cultivos, df_eventos, preco_semente_map):
-        super().__init__(master, bg=COR_TRANSPARENTE)
-        self.master = master
+    def __init__(self, master, df_cultivos, df_eventos, preco_semente_map, **kwargs):
 
+        self.master = master
         self.df_cultivos_cache = df_cultivos
         self.df_eventos_cache = df_eventos
         self.preco_semente_map = preco_semente_map
+
+        if 'bg' not in kwargs:
+            kwargs['bg'] = COR_TRANSPARENTE
+
+        super().__init__(master, **kwargs)
 
         self.data_selecionada = "Nenhuma data selecionada"
         self._x = 0
@@ -375,7 +386,7 @@ class FarmApp(tk.Frame):
         self.combobox = ttk.Combobox(self,
                                      values=["Aspersor - Nível 2", "Área Plantável"],
                                      state="readonly", cursor=POINTER_CURSOR,
-                                     justify='center') 
+                                     justify='center')
         self.combobox.set("Selecione uma opção")
         self.combobox.place(x=28, y=122, width=182, height=33)
         self.option_add('*TCombobox*Listbox.cursor', POINTER_CURSOR)
@@ -395,7 +406,7 @@ class FarmApp(tk.Frame):
         largura_botao, altura_botao = 80, 32
         padding_botoes = 37
         img_grad = criar_imagem_gradiente(largura_botao, altura_botao, "#f3b8874", "#be8053")
-        self.img_grad_tk = ImageTk.PhotoImage(img_grad) 
+        self.img_grad_tk = ImageTk.PhotoImage(img_grad)
 
         pos_x_gerar = 20
         pos_y_linha1 = 235
@@ -444,7 +455,7 @@ class FarmApp(tk.Frame):
         self.background_label.bind("<Button-1>", self.verificar_clique)
         self.background_label.bind("<B1-Motion>", self.mover_janela)
         self.background_label.bind("<Motion>", self.gerenciar_cursor)
-        
+
         tocar_musica(MUSICA_TEMA_SISTEMA, volume=0.1)
 
     def fechar_janela(self, event=None):
@@ -466,7 +477,7 @@ class FarmApp(tk.Frame):
             cal_x = self.master.winfo_x() + self.botao_calendario.winfo_x() - (self.calendario_popup.winfo_width() // 2) + (self.botao_calendario.winfo_width() // 2)
             cal_y = self.master.winfo_y() + self.botao_calendario.winfo_y() + self.botao_calendario.winfo_height() + 9
             self.calendario_popup.geometry(f"+{cal_x}+{cal_y}")
-            
+
     def verificar_clique(self, event):
         self.master.focus_set()
         area_fechar = (self.width - 36, 6, self.width - 16, 26)
@@ -519,7 +530,7 @@ class FarmApp(tk.Frame):
         widget_atual = event.widget.winfo_containing(x, y)
         if widget_atual == self.botao_Resetar:
             self.resetar_plano()
-    
+
     def on_press_ajuda(self, event):
         try:
             self.botao_ajuda.config(image=self.icone_fruta_pressed_tk)
@@ -604,9 +615,9 @@ class FarmApp(tk.Frame):
 
         try:
             texto_final = tratar_e_processar_dados(
-                dados_entrada, 
-                self.df_cultivos_cache, 
-                self.df_eventos_cache, 
+                dados_entrada,
+                self.df_cultivos_cache,
+                self.df_eventos_cache,
                 self.preco_semente_map
             )
         except Exception as e:
@@ -756,7 +767,7 @@ Olá! Seja bem-vindo(a) ao
                                     rightMargin=0.75*inch, leftMargin=0.75*inch,
                                     topMargin=0.75*inch, bottomMargin=0.75*inch)
             story = []
-            
+
             style_title = ParagraphStyle(name='TitleStyle', fontName=FONT_NAME_PDF, fontSize=20,
                                          textColor=HexColor(COR_PDF_TITULO), alignment=1, spaceAfter=12)
             style_heading = ParagraphStyle(name='HeadingStyle', fontName=FONT_NAME_PDF, fontSize=14,
@@ -797,7 +808,7 @@ Olá! Seja bem-vindo(a) ao
 class AppController(tk.Tk):
     def __init__(self):
         super().__init__()
-        
+
         self.title(APP_TITLE)
         self.withdraw()
 
@@ -813,12 +824,12 @@ class AppController(tk.Tk):
         self.df_cultivos = None
         self.df_eventos = None
         self.preco_semente_map = None
-        
+
         self.splash_frame = None
         self.main_frame = None
 
         self.show_splash_screen()
-        
+
         self.after(100, self.load_data)
 
     def show_splash_screen(self):
@@ -827,7 +838,13 @@ class AppController(tk.Tk):
             on_start_callback=self.show_main_app,
             on_quit_callback=self.quit_app
         )
-        self.splash_frame.configurar_janela() 
+
+        if not hasattr(self.splash_frame, 'inicializacao_ok'):
+            if not self.splash_frame.winfo_exists():
+                 self.quit_app()
+                 return
+
+        self.splash_frame.configurar_janela()
         self.splash_frame.pack(fill="both", expand=True)
         self.deiconify()
 
@@ -837,19 +854,28 @@ class AppController(tk.Tk):
             self.df_cultivos = carregar_cultivos()
             print("Carregando dados (Estações e Festivais.csv)...")
             self.df_eventos = carregar_eventos()
-            
+
             print("Pré-calculando mapa de preços...")
             self.preco_semente_map = get_preco_semente_map(self.df_cultivos)
 
             print("✅ Dados carregados com sucesso em cache.")
-            self.splash_frame.habilitar_inicio()
+
+            if self.splash_frame.winfo_exists():
+                self.splash_frame.habilitar_inicio()
+            else:
+                pass
+
         except Exception as e:
             print(f"❌ ERRO CRÍTICO: Falha ao carregar dados em cache. {e}")
             traceback.print_exc()
-            self.splash_frame.habilitar_inicio()
-            self.mostrar_popup_customizado(self, "Erro de Dados", 
-                f"Não foi possível carregar os arquivos CSV.\n\nVerifique se 'Cultivos.csv' e 'Estações e Festivais.csv' estão na pasta 'data'.\n\nDetalhe: {e}",
-                tipo='erro')
+
+            if self.splash_frame.winfo_exists():
+                self.splash_frame.habilitar_inicio()
+                self.mostrar_popup_customizado(self, "Erro de Dados",
+                    f"Não foi possível carregar os arquivos CSV.\n\nVerifique se 'Cultivos.csv' e 'Estações e Festivais.csv' estão na pasta 'data'.\n\nDetalhe: {e}",
+                    tipo='erro')
+            else:
+                 self.quit_app()
 
     def show_main_app(self):
         self.splash_frame.destroy()

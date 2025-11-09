@@ -1,9 +1,38 @@
 import os
+import sys
+import tempfile
+import shutil
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(BASE_DIR)
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    PROJECT_ROOT = sys._MEIPASS
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    PROJECT_ROOT = os.path.dirname(BASE_DIR)
+
 ASSETS_DIR = os.path.join(PROJECT_ROOT, "assets")
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+
+def get_cursor_spec(filename):
+  
+    cursor_file = os.path.join(ASSETS_DIR, filename)
+
+    if not os.path.exists(cursor_file):
+        return "arrow"
+
+    if getattr(sys, 'frozen', False):
+        try:
+            temp_path = os.path.join(tempfile.gettempdir(), filename)
+
+            shutil.copyfile(cursor_file, temp_path)
+
+            return f"@{temp_path.replace(os.sep, '/')}"
+
+        except Exception as e:
+            print(f"Erro ao copiar cursor '{filename}' para tempfile: {e}")
+            return "arrow"
+    else:
+        return f"@assets/{filename}"
+
 
 CAMINHO_IMAGENS = os.path.join(ASSETS_DIR, "images")
 CAMINHO_IMAGENS_PERSONAGENS = os.path.join(CAMINHO_IMAGENS, "images personagens")
@@ -14,20 +43,10 @@ FONTE_APP = "Londrina Solid"
 FONTE_ARQUIVO = os.path.join(ASSETS_DIR, "LondrinaSolid-Regular.ttf")
 FONT_NAME_PDF = 'LondrinaSolid'
 
-# CÓDIGO CORRIGIDO AQUI: Usa caminhos relativos (assets/...) para a variável *_TK
-CAMINHO_CURSOR_MAIN_CUR = os.path.join(ASSETS_DIR, "NormalSelects.cur")
-CAMINHO_CURSOR_MAIN_TK = os.path.join("assets", "NormalSelects.cur").replace("\\", "/")
 
-CAMINHO_CURSOR_POINTER_CUR = os.path.join(ASSETS_DIR, "PrecisionSelect.cur")
-CAMINHO_CURSOR_POINTER_TK = os.path.join("assets", "PrecisionSelect.cur").replace("\\", "/")
-
-CAMINHO_CURSOR_IBEAM_CUR = os.path.join(ASSETS_DIR, "TextSelect.cur")
-CAMINHO_CURSOR_IBEAM_TK = os.path.join("assets", "TextSelect.cur").replace("\\", "/")
-
-MAIN_CURSOR = f"@{CAMINHO_CURSOR_MAIN_TK}" if os.path.exists(CAMINHO_CURSOR_MAIN_CUR) else "arrow"
-POINTER_CURSOR = f"@{CAMINHO_CURSOR_POINTER_TK}" if os.path.exists(CAMINHO_CURSOR_POINTER_CUR) else "hand2"
-TEXT_IBEAM_CURSOR = f"@{CAMINHO_CURSOR_IBEAM_TK}" if os.path.exists(CAMINHO_CURSOR_IBEAM_CUR) else "xterm"
-# FIM DA CORREÇÃO
+MAIN_CURSOR = get_cursor_spec("NormalSelects.cur")
+POINTER_CURSOR = get_cursor_spec("PrecisionSelect.cur")
+TEXT_IBEAM_CURSOR = get_cursor_spec("TextSelect.cur")
 
 IMAGEM_FUNDO_SPLASH = os.path.join(CAMINHO_IMAGENS, "img_projeto.png")
 IMAGEM_FUNDO_MAIN = os.path.join(CAMINHO_IMAGENS, "img_tela_2.png")
